@@ -1,0 +1,182 @@
+========================================================================
+             HADOOP 3.2.3 WORDCOUNT - UBUNTU LAB GUIDE
+========================================================================
+
+FILES YOU NEED IN THE SAME FOLDER (~/Downloads):
+  1. hadoop_wordcount_huawei_auto.sh   - setup + WordCount program
+  2. wordcount_input.txt               - YOUR EDITABLE INPUT TEXT
+  3. HADOOP_WORDCOUNT_INSTRUCTIONS.txt - this guide
+
+IF YOU DOWNLOADED THE ZIP KIT INSTEAD OF INDIVIDUAL FILES:
+  cd ~/Downloads
+  unzip HADOOP_WORDCOUNT_LAB_KIT.zip
+  # If unzip is missing: sudo apt install unzip
+
+TO READ THIS GUIDE INSIDE UBUNTU TERMINAL:
+  less HADOOP_WORDCOUNT_INSTRUCTIONS.txt
+  # Press q to close. Use cat instead to print the whole guide.
+
+IMPORTANT:
+  - Run these commands in the UBUNTU terminal, not Windows PowerShell.
+  - Edit wordcount_input.txt to change the words to be counted.
+  - DO NOT edit the .sh file just to change the input.
+  - Internet is needed only when dependencies must be installed.
+  - The script reuses Hadoop and Java 8 if they are already available.
+  - It installs Hadoop 3.2.3 from this exact URL if needed:
+    https://repo.huaweicloud.com/apache/hadoop/common/hadoop-3.2.3/hadoop-3.2.3.tar.gz
+
+========================================================================
+  STEP 1 - OPEN THE TERMINAL AND GO TO THE FILES
+========================================================================
+
+  cd ~/Downloads
+  ls -l hadoop_wordcount_huawei_auto.sh wordcount_input.txt
+
+If you placed the three files in another folder, first cd to that folder.
+If a file is missing, copy/download it into ~/Downloads before continuing.
+
+========================================================================
+  STEP 2 - SEE / EDIT YOUR INPUT TEXT
+========================================================================
+
+  nano wordcount_input.txt
+
+Example text (replace with any text you want):
+
+  hello hadoop
+  hello world
+  hadoop is powerful
+
+Save the file in nano:
+  1. Press Ctrl + O  (write/save file)
+  2. Press Enter     (confirm file name)
+  3. Press Ctrl + X  (exit nano)
+
+Check what you saved:
+
+  cat wordcount_input.txt
+
+NOTE: Do not type END at the end of this file. It is normal text input.
+
+========================================================================
+  STEP 3 - EXECUTE THE AUTOMATIC HADOOP WORDCOUNT SCRIPT
+========================================================================
+
+  bash hadoop_wordcount_huawei_auto.sh wordcount_input.txt
+
+That's the ONE command that handles setup, compilation and execution.
+It performs the following automatically:
+  * Finds an existing Hadoop installation and reuses it where possible.
+  * Uses Java 8, or tries to install it if missing.
+  * Downloads and verifies Hadoop 3.2.3 from the Huawei mirror if needed.
+  * Creates WordCount.java, compiles it, and builds wordcount.jar.
+  * Copies the content of wordcount_input.txt into the lab input folder.
+  * Executes Hadoop MapReduce in STANDALONE / LOCAL mode.
+  * Removes the previous lab output and shows the new word counts.
+
+First-time setup might need Internet access and enough free disk space.
+If sudo is needed for missing system packages, Ubuntu may ask for a password.
+
+========================================================================
+  STEP 4 - SEE THE RESULT AGAIN
+========================================================================
+
+  cat ~/hadoop-wordcount-lab/output/part-r-00000
+
+Expected result for the example in STEP 2:
+
+  hadoop      2
+  hello       2
+  is          1
+  powerful    1
+  world       1
+
+The order is normally alphabetical. Words are case-sensitive (Hadoop
+and hadoop are different words). Punctuation is treated as part of a word.
+
+========================================================================
+  STEP 5 - CHANGE THE INPUT AND RUN AGAIN (MOST IMPORTANT)
+========================================================================
+
+Every time you want to test NEW input, use these same commands:
+
+  cd ~/Downloads
+  nano wordcount_input.txt
+  bash hadoop_wordcount_huawei_auto.sh wordcount_input.txt
+  cat ~/hadoop-wordcount-lab/output/part-r-00000
+
+In nano, change the words, then press Ctrl+O, Enter, Ctrl+X.
+No need to reinstall Hadoop, delete output, or reconfigure Java.
+The script automatically replaces ONLY its previous lab output.
+
+========================================================================
+  OPTIONAL - IF YOU WANT TO EDIT THE SCRIPT'S SAVED INPUT DIRECTLY
+========================================================================
+
+After at least one successful run, the script also has this input copy:
+
+  nano ~/hadoop-wordcount-lab/input/input.txt
+
+To run that saved input WITHOUT copying wordcount_input.txt over it:
+
+  bash ~/Downloads/hadoop_wordcount_huawei_auto.sh
+
+Do not pass wordcount_input.txt as an argument in this OPTIONAL method,
+or its contents will replace your edits to the saved input copy.
+
+========================================================================
+  USEFUL CHECKS IF ANYTHING GOES WRONG
+========================================================================
+
+Check Bash syntax (does NOT install or run Hadoop):
+
+  bash -n ~/Downloads/hadoop_wordcount_huawei_auto.sh
+
+See the last error messages:
+
+  tail -n 40 ~/hadoop-wordcount-lab/last_run.log
+
+View the full log page by page (press q to exit):
+
+  less ~/hadoop-wordcount-lab/last_run.log
+
+Check disk space:
+
+  df -h ~
+
+Check your current folder:
+
+  pwd
+
+Check whether your input file exists:
+
+  ls -l ~/Downloads/wordcount_input.txt
+
+If 'No such file or directory' appears, check the file name and folder.
+If a download fails, check Internet access and try the SAME run command.
+Some errors (e.g., no network, insufficient disk space, denied permission)
+cannot always be repaired automatically.
+
+========================================================================
+  WHERE THE GENERATED FILES ARE SAVED
+========================================================================
+
+  ~/hadoop-wordcount-lab/WordCount.java
+  ~/hadoop-wordcount-lab/wordcount.jar
+  ~/hadoop-wordcount-lab/input/input.txt
+  ~/hadoop-wordcount-lab/output/part-r-00000
+  ~/hadoop-wordcount-lab/last_run.log
+
+This is a genuine Java Hadoop MapReduce WordCount program running in
+STANDALONE mode. No SSH, HDFS setup, or YARN daemon startup is required.
+
+========================================================================
+  FAST REVISION - JUST REMEMBER THESE 4 COMMANDS
+========================================================================
+
+  cd ~/Downloads
+  nano wordcount_input.txt
+  bash hadoop_wordcount_huawei_auto.sh wordcount_input.txt
+  cat ~/hadoop-wordcount-lab/output/part-r-00000
+
+========================================================================
